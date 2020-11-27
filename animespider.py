@@ -4,9 +4,12 @@ import unicodedata
 
 """
     NOTE:
-        Before running the scraper, ho to the website and append '/robots.txt'.
+        Before running the scraper, go to the website and append '/robots.txt'.
         It will ask if you're a human, so click Submit.
         Need to do this for now to prevent 403.
+        
+        Use this command:
+            scrapy runspider malSpider.py --logfile=log.txt -O output.jl
 """
 
 # TODO: Make the scraper polite to avoid 403
