@@ -3,18 +3,11 @@ import scrapy
 import unicodedata
 
 """
-    NOTE:
-        Before running the scraper, go to the website and append '/robots.txt'.
-        It will ask if you're a human, so click Submit.
-        Need to do this for now to prevent 403.
-        
-        Use this command:
-            scrapy runspider animespider.py -O output.jl
+NOTE:
+    Use this command:
+        scrapy runspider animespider.py -O output.jl
 """
 
-
-# TODO: Make the scraper polite to avoid 403
-# TODO: Include settings, requirements, etc
 
 class AnimeSpider(scrapy.Spider):
     name = 'myanimelist'
@@ -23,11 +16,16 @@ class AnimeSpider(scrapy.Spider):
     ]
     custom_settings = {
         'AUTOTHROTTLE_ENABLED': True,
-        'DOWNLOAD_DELAY':       0.1,
+        'CONCURRENT_REQUESTS':  10,
+        'DOWNLOAD_DELAY':       2.5,
         'LOG_FILE':             'log.txt',
+        'RETRY_HTTP_CODES':     [500, 502, 503, 504, 522, 524, 408, 429, 403],  # Added 403 in case of traffic
         'ROBOTSTXT_OBEY':       True,
-        'USER_AGENT':           'Mihir Yerande (mihiryerande@gmail.com)',
-        'HTTPCACHE_ENABLED':    True  # Uncomment for debugging
+        'USER_AGENT':           'Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
+                                'Chrome/87.0.4280.66 Safari/537.36',
+
+        # Uncomment for debugging
+        # 'HTTPCACHE_ENABLED': True
     }
 
     # Specific stuff
@@ -43,7 +41,7 @@ class AnimeSpider(scrapy.Spider):
         ord('ô'): 'ou',  # Circumflex version sometimes used in Tôkyô
         ord('ū'): 'uu',
         ord('Ū'): 'Uu',
-        ord('—'): ', '  # Long hyphen which pops up sometimes
+        ord('—'): '-'    # Long hyphen which pops up sometimes
     }
     empty_desc_strs = [
         'no synopsis has been added for this series yet',
