@@ -12,6 +12,7 @@ import unicodedata
             scrapy runspider malSpider.py --logfile=log.txt -O output.jl
 """
 
+
 # TODO: Make the scraper polite to avoid 403
 # TODO: Include settings, requirements, etc
 
@@ -24,11 +25,17 @@ class AnimeSpider(scrapy.Spider):
     # Specific stuff
     char_table = {
         ord('ā'): 'aa',
+        ord('Ā'): 'Aa',
         ord('ē'): 'ee',
+        ord('Ē'): 'Ee',
+        ord('ī'): 'ii',
+        ord('Ī'): 'Ii',
         ord('ō'): 'ou',  # Not necessarily correct! Might be 'oo'
-        ord('ô'): 'ou',
+        ord('Ō'): 'Oo',  # More typical, like in Ōsaka
+        ord('ô'): 'ou',  # Circumflex version sometimes used in Tôkyô
         ord('ū'): 'uu',
-        ord('—'): ' '    # Pops up sometimes
+        ord('Ū'): 'Uu',
+        ord('—'): ', '  # Long hyphen which pops up sometimes
     }
 
     def clean_text(self, text='', desc=True):
