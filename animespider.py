@@ -9,7 +9,7 @@ import unicodedata
         Need to do this for now to prevent 403.
         
         Use this command:
-            scrapy runspider malSpider.py --logfile=log.txt -O output.jl
+            scrapy runspider animespider.py -O output.jl
 """
 
 
@@ -21,6 +21,14 @@ class AnimeSpider(scrapy.Spider):
     start_urls = [
         'https://myanimelist.net/topanime.php?type=tv'
     ]
+    custom_settings = {
+        'AUTOTHROTTLE_ENABLED': True,
+        'DOWNLOAD_DELAY':       0.1,
+        'LOG_FILE':             'log.txt',
+        'ROBOTSTXT_OBEY':       True,
+        'USER_AGENT':           'Mihir Yerande (mihiryerande@gmail.com)',
+        'HTTPCACHE_ENABLED':    True  # Uncomment for debugging
+    }
 
     # Specific stuff
     char_table = {
@@ -37,6 +45,10 @@ class AnimeSpider(scrapy.Spider):
         ord('Ū'): 'Uu',
         ord('—'): ', '  # Long hyphen which pops up sometimes
     }
+    empty_desc_strs = [
+        'no synopsis has been added for this series yet',
+        'no synopsis information has been added to this title'
+    ]
 
     def clean_text(self, text='', desc=True):
         """
@@ -105,6 +117,11 @@ class AnimeSpider(scrapy.Spider):
 
         # Description
         desc_raw = response.xpath('string(.//p[@itemprop="description"])').get()
+        desc_check = desc_raw.lower()
+        for empty_desc_str in self.empty_desc_strs:
+            if empty_desc_str in desc_check.lower():
+                return None  # Exclude any anime without a real description
+
         desc_clean = self.clean_text(desc_raw, desc=True)
         result['description'] = desc_clean
 
@@ -129,7 +146,6 @@ class AnimeSpider(scrapy.Spider):
         Returns:
             Dict(s) to be exported as a JSON with necessary data
         """
-        self.logger.info('Parsing a new response: %s', response.url)
         if 'topanime.php' in response.url:
             result = self.parse_top_anime_page(response)
         else:
