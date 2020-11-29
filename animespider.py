@@ -35,7 +35,7 @@ class AnimeSpider(scrapy.Spider):
         'AUTOTHROTTLE_ENABLED': True,
         'CONCURRENT_REQUESTS':  10,
         'DOWNLOAD_DELAY':       2.5,
-        'LOG_FILE':             'log.txt',
+        'LOG_FILE':             'spider_log.txt',
         'RETRY_HTTP_CODES':     [500, 502, 503, 504, 522, 524, 408, 429, 403],  # Added 403 in case of traffic
         'ROBOTSTXT_OBEY':       True,
         'USER_AGENT':           'Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
