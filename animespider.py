@@ -1,12 +1,29 @@
 import re
 import scrapy
-import unicodedata
 
 """
 NOTE:
     Use this command:
         scrapy runspider animespider.py -O output.jl
 """
+
+
+def clean_desc(desc):
+    """
+    Helper function to clean a given description, in case of any irregularity.
+
+    Args:
+        desc (str): A (mostly) clean bit of text to be cleaned up
+
+    Returns:
+        desc_clean (str): The cleaned-up input text
+    """
+    # Author note at end of desc
+    desc = re.sub(r'\[.*(writ|sourc).*]', '', desc, flags=re.IGNORECASE)
+    desc = re.sub(r'\(.*(writ|sourc).*\)', '', desc, flags=re.IGNORECASE)
+
+    desc = ' '.join(desc.split())
+    return desc
 
 
 class AnimeSpider(scrapy.Spider):
@@ -28,49 +45,10 @@ class AnimeSpider(scrapy.Spider):
         # 'HTTPCACHE_ENABLED': True
     }
 
-    # Specific stuff
-    char_table = {
-        ord('ā'): 'aa',
-        ord('Ā'): 'Aa',
-        ord('ē'): 'ee',
-        ord('Ē'): 'Ee',
-        ord('ī'): 'ii',
-        ord('Ī'): 'Ii',
-        ord('ō'): 'ou',  # Not necessarily correct! Might be 'oo'
-        ord('Ō'): 'Oo',  # More typical, like in Ōsaka
-        ord('ô'): 'ou',  # Circumflex version sometimes used in Tôkyô
-        ord('ū'): 'uu',
-        ord('Ū'): 'Uu',
-        ord('—'): '-'    # Long hyphen which pops up sometimes
-    }
     empty_desc_strs = [
         'no synopsis has been added for this series yet',
         'no synopsis information has been added to this title'
     ]
-
-    def clean_text(self, text='', desc=True):
-        """
-        Helper method to clean a given bit of text, in case of any irregularity.
-
-        Args:
-            text (str):  A (mostly) clean bit of text to be cleaned up
-            desc (bool): True iff passed text is for a desc
-
-        Returns:
-            text_clean (str): The cleaned-up input text
-        """
-        text_conv = text.translate(self.char_table)  # Hepburn vowels + misc
-        text_ascii = unicodedata.normalize('NFKD', text_conv).encode('ascii', 'ignore').decode('utf-8')  # Drop other
-
-        if desc:
-            # Author note at end of desc
-            text_note = re.sub(r'\[.*(writ|sourc).*]', '', text_ascii, flags=re.IGNORECASE)
-            text_clean = re.sub(r'\(.*(writ|sourc).*\)', '', text_note, flags=re.IGNORECASE)
-        else:
-            text_clean = text_ascii
-
-        text_spaced = ' '.join(text_clean.split())
-        return text_spaced
 
     def parse_top_anime_page(self, response):
         """
@@ -82,16 +60,14 @@ class AnimeSpider(scrapy.Spider):
         Returns:
             Dict(s) to be exported as a JSON with necessary data
         """
-        goto_next = True  # Indicator to continue to next 'top-anime' page
         for tr in response.css('tr.ranking-list'):
             # Found a valid anime to add to our collection
             href = tr.css('div[class="di-ib clearfix"] > h3 > a::attr(href)').get()
             yield scrapy.Request(response.urljoin(href), self.parse)
 
         # Possibly add next 'top-anime' page
-        if goto_next:
-            href = response.css('a[class="link-blue-box next"]::attr(href)').get()
-            yield scrapy.Request(response.urljoin(href), self.parse)
+        href = response.css('a[class="link-blue-box next"]::attr(href)').get()
+        yield scrapy.Request(response.urljoin(href), self.parse)
 
         return None
 
@@ -110,8 +86,7 @@ class AnimeSpider(scrapy.Spider):
 
         # Title
         title_raw = response.css('div[itemprop="name"] > h1 > strong::text').get()
-        title_clean = self.clean_text(title_raw, desc=False)
-        result['title'] = title_clean
+        result['title'] = title_raw
 
         # Description
         desc_raw = response.xpath('string(.//p[@itemprop="description"])').get()
@@ -120,13 +95,13 @@ class AnimeSpider(scrapy.Spider):
             if empty_desc_str in desc_check.lower():
                 return None  # Exclude any anime without a real description
 
-        desc_clean = self.clean_text(desc_raw, desc=True)
+        desc_clean = clean_desc(desc_raw)
         result['description'] = desc_clean
 
         # Genres (as given by myanimelist)
         genres_raw = response.css('span[itemprop="genre"]::text').getall()
         genres_str = ','.join(genres_raw)
-        result['genres'] = genres_str
+        result['mal genres'] = genres_str
 
         yield result
         return None
@@ -138,8 +113,8 @@ class AnimeSpider(scrapy.Spider):
             Else, parse the given myanimelist page for the url/title/desc.
 
         Args:
-            **kwargs:
             response: an HtmlResponse of the myanimelist page
+            **kwargs: nothing, just included to match signature
 
         Returns:
             Dict(s) to be exported as a JSON with necessary data
