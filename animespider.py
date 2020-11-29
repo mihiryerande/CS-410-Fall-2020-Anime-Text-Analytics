@@ -4,7 +4,7 @@ import scrapy
 """
 NOTE:
     Use this command:
-        scrapy runspider animespider.py -O output.jl
+        scrapy runspider animespider.py -O scraped.jl
 """
 
 
