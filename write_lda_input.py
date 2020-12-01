@@ -1,9 +1,10 @@
-import unicodedata
+import gensim
 import json
 import nltk
 from nltk.corpus import stopwords
 from nltk.corpus import wordnet
 from nltk.tokenize import word_tokenize
+import unicodedata
 
 # Make sure some stuff is downloaded
 nltk.download('averaged_perceptron_tagger')
@@ -32,12 +33,23 @@ char_table = {
     ord('ô'): 'ou',  # Circumflex version sometimes used in Tôkyô
     ord('ū'): 'uu',
     ord('Ū'): 'Uu',
-    ord('—'): ' '    # Long hyphen which is often used in the MAL descriptions
+    ord('~'): ' ',  # Stylistic punctuation
+    ord('+'): ' ',  # Stylistic punctuation
+    ord('－'): ' ',  # Japanese hyphen-like char for vowel lengthening
+    ord('—'): ' ',   # Long hyphen which is often used in the MAL descriptions
+    ord('-'): ' ',   # Split any words joined with hyphens
+    ord('/'): ' '    # Split any words joined with slashes
 }
 
 # Frequently-appearing words which aren't useful for LDA
 # TODO: Add unwanted words
-unwanted_words = {}
+unwanted_words = set()
+# {
+#     'anime',
+#     'manga',
+#     'season',
+#     'series'
+# }
 
 
 ################################################################################
@@ -84,6 +96,37 @@ def get_lemma(tok):
     return wn_lemma or tok
 
 
+def clean_tok(tok, unwanted):
+    """
+    Helper function to apply additional token-level cleaning, mostly related to punctuation.
+
+    Args:
+        tok      (str):      A token to clean
+        unwanted (set[str]): Words to be filtered out of text
+
+    Returns:
+        str: Cleaned token, which may now include spaces
+    """
+    # Apostrophes
+    tok_clean = tok.strip("'")  # Maintains internal apostrophes such as in "jun'ichi"
+
+    # Commas --> Fine since they only appear in numbers (1,000)
+
+    # Periods
+    if any(c.isdigit() for c in tok_clean):
+        tok_clean = tok_clean  # Leave decimal-looking toks alone
+    else:
+        tok_clean.lstrip(".")  # Kill ellipses and odd cases
+        tok_split = tok_clean.split(".")
+        if any(len(sub_tok) == 1 for sub_tok in tok_split):
+            tok_clean = tok_clean  # Leave splits with any single-letter alone --> probably acronym
+        else:
+            # Keep sub-tokens separate by rejoining with spaces
+            tok_split = [sub_tok for sub_tok in tok_split if sub_tok not in unwanted]  # Re-filter any stopwords away
+            tok_clean = ' '.join(tok_split)  # Rejoin without periods, to split accidentally joined words
+    return tok_clean
+
+
 def clean_text(text, unwanted):
     """
     Prepares text to be fed into the LDA algorithm.
@@ -93,16 +136,22 @@ def clean_text(text, unwanted):
         unwanted (set[str]): Words to be filtered out of text
 
     Returns:
-        list[str]: Tokenized/cleaned list of strings for LDA
+        str: Tokenized/cleaned text to feed into LDA
     """
-    text_ascii = text.translate(char_table)  # Hepburn vowels, etc
-    text_ascii = unicodedata.normalize('NFKD', text_ascii).encode('ascii', 'ignore').decode('utf-8')  # Other odd chars
+    text_clean = text.translate(char_table)  # Hepburn vowels, etc
+    text_clean = unicodedata.normalize('NFKD', text_clean).encode('ascii', 'ignore').decode('utf-8')  # Other odd chars
+    # if any((c in punctuation) for c in text_clean):
+    #     text_clean = text_clean.translate(str.maketrans('', '', punctuation))
 
-    toks = word_tokenize(text_ascii)  # Initial split
+    toks = word_tokenize(text_clean)  # Initial split
     toks = [tok.lower() for tok in toks if len(tok) > 3]  # Get rid of particles/punctuation, and lowercase
     toks = [tok for tok in toks if tok not in unwanted]  # Remove stop-words, and other unwanted words
     toks = [get_lemma(tok) for tok in toks]  # Lemmatize (not Stem) to get reduced versions of words
-    return toks
+    toks = [clean_tok(tok, unwanted) for tok in toks]  # Additional specific token cleaning for LDA
+    toks = [tok for tok in toks if len(tok) > 0]  # Some cleaned tok may have become empty
+
+    text_clean = ' '.join(toks)  # Final join to clean up
+    return text_clean
 
 
 ################################################################################
@@ -113,8 +162,9 @@ def main():
     print('Cleaning scraped data...')
     with open(input_filename, 'r') as in_f, open(output_filename, 'w') as out_f:
         # Words to exclude for LDA
-        unwanted = set(stopwords.words('English'))
-        unwanted.union(unwanted_words)
+        unwanted = unwanted_words  # Specified words to ignore
+        unwanted.update(set(stopwords.words('English')))  # NLTK stopwords
+        unwanted.update(gensim.parsing.preprocessing.STOPWORDS)  # Gensim stopwords
         for in_line in in_f:
             # Read scraped input JSON for this anime
             in_json = json.loads(in_line)
@@ -123,12 +173,14 @@ def main():
             desc = in_json['description']
 
             # Clean description
-            toks = clean_text(desc, unwanted=unwanted)
+            desc_clean = clean_text(desc, unwanted)
+            if not desc_clean:
+                desc_clean = clean_text(title, unwanted)  # Use title as LDA text, if necessary
 
             # Write output JSON as newline
             out_json = {
                 'title':    title,
-                'LDA text': ' '.join(toks)
+                'LDA text': desc_clean
             }
             out_line = json.dumps(out_json)
             out_f.write('{}\n'.format(out_line))
