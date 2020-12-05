@@ -16,10 +16,6 @@ nltk.download('wordnet')
 #                                 GLOBAL VARS                                  #
 ################################################################################
 
-# Relevant filenames
-input_filename = 'scraped.jl'
-output_filename = 'lda_input.jl'
-
 # Char table to convert Hepburn vowels to ASCII
 char_table = {
     ord('ā'): 'aa',
@@ -42,14 +38,34 @@ char_table = {
 }
 
 # Frequently-appearing words which aren't useful for LDA
-# TODO: Add unwanted words
-unwanted_words = set()
-# {
-#     'anime',
-#     'manga',
-#     'season',
-#     'series'
-# }
+unwanted_words = {
+    'adaptation',
+    'anime',
+    'base',
+    'continuation',
+    'direct',
+    'eighth',
+    'episode',
+    'fifth',
+    'final',
+    'first',
+    'fourth',
+    'like',
+    'manga',
+    'ninth',
+    'prequel',
+    'previous',
+    'season',
+    'second',
+    'sequel',
+    'serialize',
+    'series',
+    'seventh',
+    'sixth',
+    'tenth',
+    'third',
+    'weekly'
+}
 
 
 ################################################################################
@@ -158,7 +174,7 @@ def clean_text(text, unwanted):
 #                                     MAIN                                     #
 ################################################################################
 
-def main():
+def main(input_filename, output_filename):
     print('Cleaning scraped data...')
     with open(input_filename, 'r') as in_f, open(output_filename, 'w') as out_f:
         # Words to exclude for LDA
@@ -190,4 +206,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    main('scraped.jl', 'lda_input.jl')
