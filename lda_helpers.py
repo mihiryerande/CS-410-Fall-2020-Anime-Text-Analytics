@@ -3,15 +3,18 @@ import json
 from numpy.random import RandomState
 
 
-def read_lda_input(filename):
+def read_lda_input(filename, title=False):
     """
     Read LDA input text from a specified file.
 
     Args:
         filename (str): A *.jl filename from which to read the LDA input text
+        title (bool): Whether or not title should be included in a Tuple
 
     Returns:
-        list[list[str]]: List of texts, where a text is a list of tokens (strs)
+        Any:
+            If title is True, then list[list[str]], which is a list of the bag-of-words (list[str]) of each show.
+            Else list[(str,list[str])], which is the same, but each element is a Tuple including the show title (str).
     """
     with open(filename) as f:
         lda_input = []
@@ -20,7 +23,8 @@ def read_lda_input(filename):
             json_line = json.loads(line)
             text = json_line['LDA text']
             toks = text.split()
-            lda_input.append(toks)
+            elt = (json_line['title'], toks) if title else toks
+            lda_input.append(elt)
     return lda_input
 
 
