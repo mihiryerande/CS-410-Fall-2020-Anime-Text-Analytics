@@ -1,4 +1,4 @@
-import gensim
+from gensim.parsing.preprocessing import STOPWORDS
 import json
 import nltk
 from nltk.corpus import stopwords
@@ -180,7 +180,7 @@ def main(input_filename, output_filename):
         # Words to exclude for LDA
         unwanted = unwanted_words  # Specified words to ignore
         unwanted.update(set(stopwords.words('English')))  # NLTK stopwords
-        unwanted.update(gensim.parsing.preprocessing.STOPWORDS)  # Gensim stopwords
+        unwanted.update(STOPWORDS)  # Gensim stopwords
         for in_line in in_f:
             # Read scraped input JSON for this anime
             in_json = json.loads(in_line)
