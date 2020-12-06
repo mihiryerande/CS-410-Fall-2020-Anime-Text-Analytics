@@ -206,4 +206,4 @@ def main(input_filename, output_filename):
 
 
 if __name__ == '__main__':
-    main('scraper/scraped.jl', 'lda_input.jl')
+    main('../scraper/scraped.jl', 'lda_input.jl')
