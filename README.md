@@ -4,7 +4,7 @@ Add website URL in couple places below.
 
 # Animé Text Analytics
 
-To view the output of this project, please visit <<<INSERT URL HERE, AND BELOW>.>>
+To view the output of this project, please visit <<.<INSERT URL HERE, AND BELOW>.>>
   
 ## Information
 
@@ -34,4 +34,24 @@ In addition, each animé show can be assigned a *topic coverage* (i.e. *genre br
 
 ### Website
 
-The output of the project has been published to a website, which can be found here: <<<INSERT URL HERE>>>
+The output of the project has been published to a website, which can be found here: <<<INSERT URL HERE,>>>
+
+## Implementation
+
+This section steps through the implementation of the project from start to finish.
+
+### Scraper
+
+The raw text data is scraped from myanimelist, specifically from the list beginning [here](https://myanimelist.net/topanime.php?type=tv).
+
+The scraper is implemented in Python using the *scrapy* framework.
+See [*animespider.py*](https://github.com/mihiryerande/CS-410-Fall-2020-Anime-Text-Analytics/blob/main/source_code/scraper/animespider.py).
+
+To run the scraper, navigate to the directory and run the following command:
+```
+scrapy runspider animespider.py -o scraped.jl
+```
+
+The output has already been written to [*scraped.jl*](https://github.com/mihiryerande/CS-410-Fall-2020-Anime-Text-Analytics/blob/main/source_code/scraper/scraped.jl).
+
+The spider's log will automatically write to *spider_log.txt*, in the same directory.
