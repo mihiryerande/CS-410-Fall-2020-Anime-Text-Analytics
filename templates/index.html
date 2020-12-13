@@ -26,16 +26,16 @@
     <div id="carousel" class="blue-grey darken-4">
         <div class="container">
             <div class="row">
-                <h3 class="center white-text col s12">Explore New Genres</h3>
+                <h3 class="center white-text col s12">Explore New Genres from our LDA Model</h3>
                 <div class="carousel carousel-slider center col s12">
                     <div class="carousel-fixed-item center">
-                        <a class="btn waves-effect white grey-text darken-text-2">Explore</a>
+                        <a href="{{ url_for('lda_genre_list') }}" class="btn waves-effect white grey-text darken-text-2">Explore</a>
                     </div>
-                    {% for genre in genres[0:10] %}
+                    {% for lda_genre in lda_genres[0:10] %}
                     <div class="carousel-item  blue-grey darken-3 white-text">
-                        <h2>{{genre.name}}</h2>
+                        <h2>{{lda_genre.name}}</h2>
                         <ul class="collection">
-                        {% for anime in genre.animes[0:3] %}
+                        {% for anime in carousel_animes[loop.index - 1] %}
                             <li class="collection-item blue-grey darken-1 white-text">{{anime.title}}</li>
                         {% endfor %}
                         </ul>

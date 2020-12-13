@@ -18,11 +18,25 @@
             {% endfor %}
         </div>
         <h5>LDA Genres:</h5>
-        <div class="collection">
-            {% for genre in anime.genres %}
-            <a href="#!" class="collection-item">TODO</a>
-            {% endfor %}
-        </div>
+        <table class="highlight blue-grey lighten-5 blue-grey-text text-darken-5">
+            <thead>
+              <tr>
+                  <th>LDA Genre</th>
+                  <th>LDA Weight</th>
+              </tr>
+            </thead>
+    
+            <tbody>
+              {% for item in anime_weights %}
+              <tr>
+                <td><a href="{{ url_for('lda_genre', id=lda_genres[loop.index - 1].id) }}" class="collection-item">
+                    {{ lda_genres[loop.index - 1].name }}</a></td>
+                <td>{{ item.weight }}</td>
+              </tr>
+              {% endfor %}
+
+            </tbody>
+          </table>
         <h5>Similar Shows:</h5>
         <div class="collection">
             {% for genre in anime.genres %}

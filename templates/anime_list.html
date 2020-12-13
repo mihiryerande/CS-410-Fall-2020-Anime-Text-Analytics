@@ -14,7 +14,7 @@
               <tr>
                   <th>Title</th>
                   <th>Sample Genres</th>
-                  <th>Sample LDA Genres</th>
+                  <th>Top LDA Genre</th>
               </tr>
             </thead>
     
@@ -27,7 +27,9 @@
                         <a class="force-white" href="{{ url_for('genre', id=genre.id) }}">{{ genre.name }}</a> {% if genre != anime.genres[0:3][-1] %}, {% endif %}
                     {% endfor %}
                 </td>
-                <td>TODO</td>
+                <td>
+                  <a class="force-white" href="{{ url_for('lda_genre', id=lda_genres[loop.index - 1].id) }}">{{ lda_genres[loop.index - 1].name }}</a>
+                </td>
               </tr>
               {% endfor %}
             </tbody>
