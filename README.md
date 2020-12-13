@@ -14,8 +14,6 @@ This is a Course Project for UIUC CS 410: Text Information Systems (Fall 2020).
 * Karan Bokil [@kabokil](https://github.com/bokilenator)
 * Mihir Yerande [@mihiryerande](https://github.com/mihiryerande)
 
-@github/bokilenator
-
 ### Intuition
 
 Animé shows are already categorized into various genres, such as *Shо̄nen* or *Mecha*, for example.
@@ -44,14 +42,29 @@ This section steps through the implementation of the project from start to finis
 
 The raw text data is scraped from myanimelist, specifically from the list beginning [here](https://myanimelist.net/topanime.php?type=tv).
 
-The scraper is implemented in Python using the *scrapy* framework.
+The output has already been written to [*scraped.jl*](https://github.com/mihiryerande/CS-410-Fall-2020-Anime-Text-Analytics/blob/main/source_code/scraper/scraped.jl).
+
+The scraper was implemented in Python using the *scrapy* framework.
 See [*animespider.py*](https://github.com/mihiryerande/CS-410-Fall-2020-Anime-Text-Analytics/blob/main/source_code/scraper/animespider.py).
 
-To run the scraper, navigate to the directory and run the following command:
+To run the scraper, navigate to the containing directory, and run the following command:
 ```
 scrapy runspider animespider.py -o scraped.jl
 ```
 
-The output has already been written to [*scraped.jl*](https://github.com/mihiryerande/CS-410-Fall-2020-Anime-Text-Analytics/blob/main/source_code/scraper/scraped.jl).
-
 The spider's log will automatically write to *spider_log.txt*, in the same directory.
+
+### LDA Input
+
+In order to run LDA, the raw text must be tokenized and cleaned.
+
+The output of this step has already been written to [*lda_input.jl*](https://github.com/mihiryerande/CS-410-Fall-2020-Anime-Text-Analytics/blob/main/source_code/lda_input/lda_input.jl).
+
+See (*write_lda_input.py*)[https://github.com/mihiryerande/CS-410-Fall-2020-Anime-Text-Analytics/blob/main/source_code/lda_input/write_lda_input.py] for the implementation.
+
+To run the text cleaning, navigate to the containing directory, and run the following command:
+```
+python write_lda_input.py
+```
+
+Print-out should appear in the console as each show's raw text is cleaned.
