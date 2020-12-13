@@ -76,3 +76,11 @@ After cleaning the raw text, we can now train our LDA model.
 The trained LDA model has already been saved to [lda_model](https://github.com/mihiryerande/CS-410-Fall-2020-Anime-Text-Analytics/blob/main/source_code/lda_model/).
 
 See [write_lda_model.ipynb](https://github.com/mihiryerande/CS-410-Fall-2020-Anime-Text-Analytics/blob/main/source_code/write_lda_model.ipynb) for further explanation.
+
+## LDA Output
+
+After training the LDA model, we can obtain the desired output about *genres*.
+
+The output of this step has already been written to [*lda_output*](https://github.com/mihiryerande/CS-410-Fall-2020-Anime-Text-Analytics/blob/main/source_code/lda_output/).
+
+See [write_lda_output.ipynb](https://github.com/mihiryerande/CS-410-Fall-2020-Anime-Text-Analytics/blob/main/source_code/write_lda_output.ipynb) for further explanation.
