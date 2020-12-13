@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Anime Shows</title>
+{% endblock %}
+
+{% block body %}
+<div class="blue-grey darken-2">
+    <br>
+    <div class="container white-text">
+        <h1>Anime Shows</h1>
+        <table class="highlight">
+            <thead>
+              <tr>
+                  <th>Title</th>
+                  <th>Sample Genres</th>
+                  <th>Sample LDA Genres</th>
+              </tr>
+            </thead>
+    
+            <tbody>
+              {% for anime in animes.items %}
+              <tr>
+                <td><a class="force-white" href="{{ url_for('anime', id=anime.id) }}">{{ anime.title }}</a></td>
+                <td>
+                    {% for genre in anime.genres[0:3] %}
+                        <a class="force-white" href="{{ url_for('genre', id=genre.id) }}">{{ genre.name }}</a> {% if genre != anime.genres[0:3][-1] %}, {% endif %}
+                    {% endfor %}
+                </td>
+                <td>TODO</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+
+          <ul class="pagination white-text">
+            <!-- prev page -->
+            {% if animes.has_prev %}
+            <li><a href="{{ url_for('anime_list', page_num=animes.prev_num) }}"><i class="material-icons white-text">chevron_left</i></a></li>
+            {% else %}
+            <li class="disabled"><a href="{{ url_for('anime_list', page_num=animes.prev_num) }}"><i class="material-icons">chevron_left</i></a></li>
+            {% endif %}
+
+            <!-- all pages -->
+            {% for page_num in animes.iter_pages() %}
+                {% if page_num %}
+                    {% if page_num != animes.page %}
+                    <li class="waves-effect"><a class="white-text" href="{{ url_for('anime_list', page_num=page_num) }}">{{ page_num }}</a></li>
+                    {% else %}
+                    <li class="active"><a href="#">{{ page_num }}</a></li>
+                    {% endif %}
+                {% else %}
+                    <li>
+                        <span class="ellipsis white-text" style="white-space; nowrap; overflow: hidden; text-overflow: ellipsis">…</span>
+                    </li>
+                {% endif %}
+            {% endfor %}
+
+            <!-- next page -->
+            {% if animes.has_next %}
+            <li><a href="{{ url_for('anime_list', page_num=animes.next_num) }}"><i class="material-icons white-text">chevron_right</i></a></li>
+            {% else %}
+            <li class="disabled"><a href="{{ url_for('anime_list', page_num=animes.next_num) }}"><i class="material-icons">chevron_right</i></a></li>
+            {% endif %}
+          </ul>
+    </div>
+    
+{% endblock %}

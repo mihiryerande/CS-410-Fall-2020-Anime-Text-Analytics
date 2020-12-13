@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>{{ anime.title }}</title>
+{% endblock %}
+
+{% block body %}
+<div class="blue-grey darken-2">
+    <br>
+    <div class="container blue-grey-text text-lighten-4">
+        <h3>{{ anime.title }}</h3>
+        <h5>Description</h5>
+        <p>{{ anime.description }}</p>
+        <h5>Genres:</h5>
+        <div class="collection">
+            {% for genre in anime.genres %}
+            <a href="{{ url_for('genre', id=genre.id) }}" class="collection-item">{{ genre.name }}</a>
+            {% endfor %}
+        </div>
+        <h5>LDA Genres:</h5>
+        <div class="collection">
+            {% for genre in anime.genres %}
+            <a href="#!" class="collection-item">TODO</a>
+            {% endfor %}
+        </div>
+        <h5>Similar Shows:</h5>
+        <div class="collection">
+            {% for genre in anime.genres %}
+            <a href="#!" class="collection-item">TODO</a>
+            {% endfor %}
+        </div>
+    </div>
+    
+{% endblock %}
