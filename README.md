@@ -60,7 +60,7 @@ In order to run LDA, the raw text must be tokenized and cleaned.
 
 The output of this step has already been written to [*lda_input.jl*](https://github.com/mihiryerande/CS-410-Fall-2020-Anime-Text-Analytics/blob/main/source_code/lda_input/lda_input.jl).
 
-See (*write_lda_input.py*)[https://github.com/mihiryerande/CS-410-Fall-2020-Anime-Text-Analytics/blob/main/source_code/lda_input/write_lda_input.py] for the implementation.
+See [*write_lda_input.py*](https://github.com/mihiryerande/CS-410-Fall-2020-Anime-Text-Analytics/blob/main/source_code/lda_input/write_lda_input.py) for the implementation.
 
 To run the text cleaning, navigate to the containing directory, and run the following command:
 ```
