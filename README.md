@@ -2,7 +2,7 @@
 
 Add website URL in couple places below.
 
-# Animé Text Analytics
+# Anime Text Analytics
 
 This is a Course Project for UIUC CS 410: Text Information Systems (Fall 2020).
 
@@ -16,19 +16,19 @@ To view the output of this project, please visit <<.<INSERT URL HERE, AND BELOW>
 
 ## Explanation
 
-Animé shows are already categorized into various genres, such as *Shо̄nen* or *Mecha*, for example.
+Anime shows are already categorized into various genres, such as *Shо̄nen* or *Mecha*, for example.
 
 This project attempts to use the **Latent Dirichlet Allocation** (LDA) algorithm to determine such genres from text data.
 
 Given some input text data, LDA works by training a model on text data to obtain *topics* and *topic coverages*.
 
-We use text data, scraped and cleaned, from *myanimelist.com*, where there are short synopses of animé shows.
+We use text data, scraped and cleaned, from *myanimelist.com*, where there are short synopses of anime shows.
 
 The *topics* produced by our LDA model are referred to as *LDA genres*.
 
 Each genre is a probabilistic distribution over words, which would ideally reflect a genre understandable to humans.
 
-In addition, each animé show can be assigned a *topic coverage* (i.e. *genre breakdown*), so we might say a show is 71% *Shо̄nen* and 29% *Mecha*, for example.
+In addition, each anime show can be assigned a *topic coverage* (i.e. *genre breakdown*), so we might say a show is 71% *Shо̄nen* and 29% *Mecha*, for example.
 
 ## Website
 
@@ -68,3 +68,11 @@ python write_lda_input.py
 ```
 
 Print-out should appear in the console as each show's raw text is cleaned.
+
+## LDA Model
+
+After cleaning the raw text, we can now train our LDA model.
+
+The trained LDA model has already been saved to [lda_model](https://github.com/mihiryerande/CS-410-Fall-2020-Anime-Text-Analytics/blob/main/source_code/lda_model/).
+
+See [write_lda_model.ipynb](https://github.com/mihiryerande/CS-410-Fall-2020-Anime-Text-Analytics/blob/main/source_code/write_lda_model.ipynb) for further explanation.
