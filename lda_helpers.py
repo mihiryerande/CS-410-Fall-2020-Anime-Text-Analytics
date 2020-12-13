@@ -28,31 +28,36 @@ def read_lda_input(filename, title=False):
     return lda_input
 
 
-def get_lda_model(corpus, id2word, k, r, alpha=None, eta=None):
+def get_lda_model(corpus, id2word, k, r=None, eta=None):
     """
     Run LDA with some specified inputs.
 
     Args:
-        corpus (list[list[(int,int)]]): Bag-of-words representation of texts
-        id2word (gensim.corpora.dictionary.Dictionary): A gensim Dictionary
-        k (int): Number of topics
-        r (int): Integer to seed random starting state, for reproducibility
-        alpha ({float, str}): Optional hyperparameter for LDA
-        eta ({float,str}): Optional hyperparameter for LDA
+        corpus (list[list[(int,int)]]):
+            Bag-of-words representation of texts
+        id2word (gensim.corpora.dictionary.Dictionary):
+            A gensim Dictionary
+        k (int):
+            Number of topics
+        r (int):
+            Optional integer to seed random starting state, for reproducibility
+        eta ({float, np.array, str}):
+            Optional hyperparameter for LDA
 
     Returns:
         gensim.models.LdaModel: LDA output model object
     """
+    if r is not None:
+        r = RandomState(r)
+
     lda_model = LdaModel(
         corpus=corpus,
         num_topics=k,
         id2word=id2word,
         chunksize=100,
-        random_state=RandomState(r),
+        random_state=r,
         update_every=1,
-        alpha=(alpha or 'symmetric'),
-        eta=(eta or None),
-        per_word_topics=True
+        eta=eta
     )
     return lda_model
 
