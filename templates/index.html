@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Anime Text Analytics</title>
+{% endblock %}
+
+{% block body %}
+<div id="index-banner" class="parallax-container">
+    <div class="section no-pad-bot">
+      <div class="container">
+        <br><br>
+        <h1 class="header center teal-text text-lighten-2">Team Nani CS 410 Final Project</h1>
+        <div class="row center">
+          <h5 class="header col s12 light">This website aims to provide insight into Japanese anime through topic mining with Latent Dirichlet allocation and text information retrieval using an Okapi BM25 ranking function.</h5>
+          <h6 class="header col s12 light">Data was scraped using Scrapy on myanimelist.net. Topic mining is preprocessed (see Jupyter notebooks in repo). </h5>
+        </div>
+      </div>
+    </div>
+    <div class="parallax"><img src="{{ url_for('static', filename='images/background1.jpg') }}" alt="Unsplashed background img 1"></div>
+  </div>
+
+
+
+
+    <!--   Carousel Section   -->
+    <div id="carousel" class="blue-grey darken-4">
+        <div class="container">
+            <div class="row">
+                <h3 class="center white-text col s12">Explore New Genres</h3>
+                <div class="carousel carousel-slider center col s12">
+                    <div class="carousel-fixed-item center">
+                        <a class="btn waves-effect white grey-text darken-text-2">Explore</a>
+                    </div>
+                    {% for genre in genres[0:10] %}
+                    <div class="carousel-item  blue-grey darken-3 white-text">
+                        <h2>{{genre.name}}</h2>
+                        <ul class="collection">
+                        {% for anime in genre.animes[0:3] %}
+                            <li class="collection-item blue-grey darken-1 white-text">{{anime.title}}</li>
+                        {% endfor %}
+                        </ul>
+                    </div>
+                    {% endfor %}
+                </div>        
+            </div>
+            <br>
+        </div>
+    </div>
+
+
+
+  <div class="parallax-container valign-wrapper">
+    <div class="section no-pad-bot">
+      <div class="container">
+        <div class="row center">
+          <h5 class="header col s12 light">Search our scraped list of animes, genres and LDA derived subgenres using Azure Cognitive Search.</h5>
+        </div>
+      </div>
+    </div>
+    <div class="parallax"><img src="{{ url_for('static', filename='images/background2.jpg') }}" alt="Unsplashed background img 2"></div>
+  </div>
+
+  <div class="container">
+    <div class="section">
+
+      <div class="row">
+        <div class="col s12 center">
+          <h3><i class="mdi-content-send brown-text"></i></h3>
+          <h4>Search</h4>
+          <div class="row">
+            <form class="col s12">
+              <div class="row">
+                <div class="input-field col s12">
+                  <i class="material-icons prefix">search</i>
+                  <textarea id="search-demo" class="materialize-textarea"></textarea>
+                  <label for="search-demo">Search key words for an anime or genre.</label>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <div class="parallax-container valign-wrapper">
+    <div class="section no-pad-bot">
+      <div class="container">
+        <div class="row center">
+        </div>
+      </div>
+    </div>
+    <div class="parallax"><img src="{{ url_for('static', filename='images/background3.jpg') }}" alt="Unsplashed background img 3"></div>
+  </div>
+{% endblock %}
