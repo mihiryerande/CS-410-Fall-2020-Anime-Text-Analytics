@@ -10,17 +10,19 @@
     <div class="container blue-grey-text text-lighten-4">
         <h3>{{ genre.name }}</h3>
         <h5>Shows:</h5>
-        <div class="collection">
-            {% for anime in genre.animes %}
-            <a href="{{ url_for('anime', id=anime.id) }}" class="collection-item">{{ anime.title }}</a>
-            {% endfor %}
-        </div>
-        <h5>Similar Genres:</h5>
-        <div class="collection">
-            {% for anime in genre.animes %}
-            <a href="#!" class="collection-item">TODO</a>
-            {% endfor %}
-        </div>
+        <table class="highlight blue-grey lighten-4 blue-grey-text text-darken-5">
+            <thead>
+              <tr>
+              </tr>
+            </thead>
+            <tbody>
+                {% for anime in genre.animes %}
+                <tr>
+                <td><a href="{{ url_for('anime', id=anime.id) }}" class="collection-item">{{ anime.title }}</a></a></td>
+              </tr>
+              {% endfor %}
+            </tbody>
+        </table>
     </div>
     
 {% endblock %}

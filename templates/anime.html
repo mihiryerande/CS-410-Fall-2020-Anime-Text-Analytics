@@ -12,13 +12,22 @@
         <h5>Description</h5>
         <p>{{ anime.description }}</p>
         <h5>Genres:</h5>
-        <div class="collection">
+        <table class="highlight blue-grey lighten-4 blue-grey-text text-darken-5">
+          <thead>
+            <tr>
+            </tr>
+          </thead>
+          <tbody>
             {% for genre in anime.genres %}
-            <a href="{{ url_for('genre', id=genre.id) }}" class="collection-item">{{ genre.name }}</a>
+            <tr>
+              <td><a href="{{ url_for('genre', id=genre.id) }}" class="collection-item">{{ genre.name }}</a></td>
+            </tr>
             {% endfor %}
-        </div>
+          </tbody>
+        </table>
+
         <h5>LDA Genres:</h5>
-        <table class="highlight blue-grey lighten-5 blue-grey-text text-darken-5">
+        <table class="highlight blue-grey lighten-4 blue-grey-text text-darken-5">
             <thead>
               <tr>
                   <th>LDA Genre</th>
