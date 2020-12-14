@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>{{ lda_genre.name }}</title>
+{% endblock %}
+
+{% block body %}
+<div class="blue-grey darken-2">
+    <br>
+    <div class="container blue-grey-text text-lighten-4">
+        <h3>{{ lda_genre.name }}</h3>
+        <h5>Top 10 Shows:</h5>
+        <table class="highlight blue-grey lighten-4 blue-grey-text text-darken-5">
+            <thead>
+              <tr>
+                  <th>Show</th>
+                  <th>LDA Weight</th>
+              </tr>
+            </thead>
+    
+            <tbody>
+              {% for item in anime_weights %}
+              <tr>
+                <td><a href="{{ url_for('anime', id=animes[loop.index - 1].id) }}" class="collection-item">
+                    {{ animes[loop.index - 1].title }}</a></td>
+                <td>{{ item.weight }}</td>
+              </tr>
+              {% endfor %}
+
+            </tbody>
+          </table>
+
+        <h5>LDA Genre Key Words:</h5>
+        <table class="highlight blue-grey lighten-4 blue-grey-text text-darken-5">
+            <thead>
+              <tr>
+                  <th>Word</th>
+                  <th>Weight</th>
+              </tr>
+            </thead>
+    
+            <tbody>
+              {% for word in words %}
+              <tr>
+                <td>{{ word.word }}</td>
+                <td>{{ word.weight }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+    </div>
+    
+{% endblock %}

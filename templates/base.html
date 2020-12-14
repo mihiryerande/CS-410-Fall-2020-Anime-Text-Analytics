@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <nav class="blue-grey darken-4">
+        <div class="nav-wrapper container">
+          <a href="{{ url_for('index') }}" class="brand-logo center">Anime Text Analytics</a>
+          <ul id="nav-mobile" class="left hide-on-med-and-down">
+            <li><a href="{{ url_for('anime_list') }}">Animes</a></li>
+            <li><a href="{{ url_for('genre_list') }}">Genres</a></li>
+            <li><a href="{{ url_for('lda_genre_list') }}">LDA Genres</a></li>
+          </ul>
+          <form class="right">
+            <div class="input-field">
+              <input class="blue-grey darken-4 white-text" id="search" type="search" placeholder="Search site">
+              <label class="label-icon white-text" for="search"><i class="material-icons">search</i></label>
+            </div>
+          </form>
+        </div>
+      </nav>
+      <!-- <div class="container"> -->
+          {% block body %}{% endblock %}
+      <!-- </div> -->
+
+      <footer class="page-footer blue-grey darken-3">
+        <div class="container">
+          <div class="row">
+            <div class="col l6 s12">
+              <h5 class="white-text">Team Nani</h5>
+              <p class="grey-text text-lighten-4">We are a team of UIUC grad students working on this project for CS 410 Text Information Systems. Please check out our <a class="blue-text text-lighten-3" href="https://github.com/mihiryerande/CS-410-Fall-2020-Anime-Text-Analytics">source code</a> if you'd like to learn more about our work.</p>
+    
+    
+            </div>
+            <div class="col l3 s12">
+              <h5 class="white-text">Mihir Yerande</h5>
+              <ul>
+                <li><a class="blue-text text-lighten-3" href="https://www.linkedin.com/in/mihiryerande/">LinkedIn</a></li>
+                <li><a class="blue-text text-lighten-3" href="mailto:yerande2@illinois.edu">yerande2@illinois.edu</a></li>
+              </ul>
+            </div>
+            <div class="col l3 s12">
+              <h5 class="white-text">Karan Bokil</h5>
+              <ul>
+                <li><a class="blue-text text-lighten-3" href="https://www.linkedin.com/in/karanbokil/">LinkedIn</a></li>
+                <li><a class="blue-text text-lighten-3" href="mailto:karanb2@illinois.edu">karanb2@illinois.edu</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="footer-copyright">
+          <div class="container">
+          Website made with Flask, Materialize, Azure SQL, & Azure Cognitive Search.
+          </div>
+        </div>
+      </footer>
+        <!--  Scripts-->
+    <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script src="{{ url_for('static', filename='js/init.js') }}"></script>
+</body>
+</html>

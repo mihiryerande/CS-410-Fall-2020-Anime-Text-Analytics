@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>{{ anime.title }}</title>
+{% endblock %}
+
+{% block body %}
+<div class="blue-grey darken-2">
+    <br>
+    <div class="container blue-grey-text text-lighten-4">
+        <h3>{{ anime.title }}</h3>
+        <h5>Description</h5>
+        <p>{{ anime.description }}</p>
+        <h5>Genres:</h5>
+        <table class="highlight blue-grey lighten-4 blue-grey-text text-darken-5">
+          <thead>
+            <tr>
+            </tr>
+          </thead>
+          <tbody>
+            {% for genre in anime.genres %}
+            <tr>
+              <td><a href="{{ url_for('genre', id=genre.id) }}" class="collection-item">{{ genre.name }}</a></td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+        <h5>LDA Genres:</h5>
+        <table class="highlight blue-grey lighten-4 blue-grey-text text-darken-5">
+            <thead>
+              <tr>
+                  <th>LDA Genre</th>
+                  <th>LDA Weight</th>
+              </tr>
+            </thead>
+    
+            <tbody>
+              {% for item in anime_weights %}
+              <tr>
+                <td><a href="{{ url_for('lda_genre', id=lda_genres[loop.index - 1].id) }}" class="collection-item">
+                    {{ lda_genres[loop.index - 1].name }}</a></td>
+                <td>{{ item.weight }}</td>
+              </tr>
+              {% endfor %}
+
+            </tbody>
+          </table>
+        <h5>Similar Shows:</h5>
+        <table class="highlight blue-grey lighten-4 blue-grey-text text-darken-5">
+          <thead>
+            <tr>
+                <th>Title</th>
+                <th>LDA Distance</th>
+            </tr>
+          </thead>
+  
+          <tbody>
+            {% for anime in similar_animes %}
+            <tr>
+              <td><a href="{{ url_for('lda_genre', id=lda_genres[loop.index - 1].id) }}">
+                  {{ anime.title }}</a></td>
+              <td>{{ similar_anime_links[loop.index - 1].distance }}</td>
+            </tr>
+            {% endfor %}
+
+          </tbody>
+        </table>
+    </div>
+    
+{% endblock %}
