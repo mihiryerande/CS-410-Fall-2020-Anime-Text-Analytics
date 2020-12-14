@@ -1,33 +1,30 @@
 from flask import Flask, render_template, url_for, request, redirect
 from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime
+from flask_msearch import Search
+
 
 ### DB Connection
 
 ## local testing settings
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
+app.config['MSEARCH_BACKEND'] = 'whoosh'
 db = SQLAlchemy(app)
+search = Search()
+search.init_app(app)
 
-## production testing settings
-# import pyodbc
-# import urllib
+# Association tables
 
-# app = Flask(__name__)
+class AnimeLDAGenreLink(db.Model):
+    __tablename__ = 'anime_lda_genre_link'
+    lda_genre_id = db.Column(db.Integer(), db.ForeignKey('lda_genres.id'), primary_key=True)
+    anime_id = db.Column(db.Integer, db.ForeignKey('animes.id'), primary_key=True)
+    weight = db.Column(db.Integer(), nullable=False)
 
-# for driver in pyodbc.drivers():
-#     print(driver)
-
-# params = urllib.parse.quote_plus \
-# (r'Driver={ODBC Driver 17 for SQL Server};Server=tcp:cs410-server.database.windows.net,1433;Database=CS410;Uid=karanb2;Pwd=Pass1Word;Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;')
-# conn_str = 'mssql+pyodbc:///?odbc_connect={}'.format(params)
-# app.config['SQLALCHEMY_DATABASE_URI'] = conn_str
-
-# print('connection is ok')
-# db = SQLAlchemy(app)
-
-
-### Models
+anime_genres = db.Table('anime_genres',
+    db.Column('anime_id', db.Integer, db.ForeignKey('animes.id')),
+    db.Column('genre_id', db.Integer, db.ForeignKey('genres.id')),
+)
 
 class SimilarAnimeLink(db.Model):
     __tablename__ = 'similar_anime_link'
@@ -35,8 +32,38 @@ class SimilarAnimeLink(db.Model):
     anime_2_id = db.Column(db.Integer, db.ForeignKey('animes.id'), primary_key=True)
     distance = db.Column(db.Integer(), nullable=False)
 
+### Models
+class LDAGenreWord(db.Model):
+    __tablename__ = 'lda_genre_words'
+    __searchable__ = ['word']
+    id = db.Column(db.Integer, primary_key=True)
+    word = db.Column(db.String(200), nullable=False)
+    weight = db.Column(db.Integer(), nullable=False)
+    lda_genre_id = db.Column(db.Integer(), db.ForeignKey('lda_genres.id'))
+    
+    def __repr__(self):
+        return '<LDA Genre Word %r, %s>' % (self.id, self.word)
+
+
+
+class LDAGenre(db.Model):
+    __tablename__ = 'lda_genres'
+    __searchable__ = ['name']
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(200), nullable=False)
+    words = db.relationship('LDAGenreWord', backref='LDAGenre')
+    animes = db.relationship(
+        'Anime',
+        secondary='anime_lda_genre_link'
+    )
+
+    def __repr__(self):
+        return '<LDA Genre %r, %s>' % (self.id, self.name)
+
+
 class Anime(db.Model):
     __tablename__ = 'animes'
+    __searchable__ = ['title', 'description']
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(200), nullable=False)
     description = db.Column(db.Text(), default="")
@@ -62,6 +89,7 @@ class Anime(db.Model):
 
 class Genre(db.Model):
     __tablename__ = 'genres'
+    __searchable__ = ['name']
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(200), nullable=False)
     animes = db.relationship('Anime', secondary='anime_genres', backref='genre')
@@ -69,47 +97,18 @@ class Genre(db.Model):
     def __repr__(self):
         return '<Genre %r, %s>' % (self.id, self.name)
 
-class LDAGenre(db.Model):
-    __tablename__ = 'lda_genres'
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(200), nullable=False)
-    words = db.relationship('LDAGenreWord', backref='LDAGenre')
-    animes = db.relationship(
-        'Anime',
-        secondary='anime_lda_genre_link'
-    )
 
-    def __repr__(self):
-        return '<LDA Genre %r, %s>' % (self.id, self.name)
 
-class LDAGenreWord(db.Model):
-    __tablename__ = 'lda_genre_words'
-    id = db.Column(db.Integer, primary_key=True)
-    word = db.Column(db.String(200), nullable=False)
-    weight = db.Column(db.Integer(), nullable=False)
-    lda_genre_id = db.Column(db.Integer(), db.ForeignKey('lda_genres.id'))
-    
-    def __repr__(self):
-        return '<LDA Genre Word %r, %s>' % (self.id, self.word)
 
-# Association tables
-
-class AnimeLDAGenreLink(db.Model):
-    __tablename__ = 'anime_lda_genre_link'
-    lda_genre_id = db.Column(db.Integer(), db.ForeignKey('lda_genres.id'), primary_key=True)
-    anime_id = db.Column(db.Integer, db.ForeignKey('animes.id'), primary_key=True)
-    weight = db.Column(db.Integer(), nullable=False)
-
-anime_genres = db.Table('anime_genres',
-    db.Column('anime_id', db.Integer, db.ForeignKey('animes.id')),
-    db.Column('genre_id', db.Integer, db.ForeignKey('genres.id')),
-)
 
 
 ### Routes
 
 @app.route('/', methods=['POST', 'GET'])
 def index():
+
+    results = Genre.query.msearch('school',fields=['name'],limit=20)
+    print("results",results, results.all())
     lda_genres = LDAGenre.query.order_by(LDAGenre.id).all()
     carousel_animes = []
     for lda_genre in lda_genres:
