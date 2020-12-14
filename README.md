@@ -3,7 +3,8 @@
   This is a Course Project for UIUC CS 410: Text Information Systems (Fall 2020).
   
   To view the output of this project, please visit https://animetextanalytics.azurewebsites.net.
-  A video presentation of the work done can be viewed here: https://drive.google.com/file/d/14jh6yDhDtipXFKGSlR2VLU6QG2RS9bh4/view?usp=sharing
+
+  A video presentation of the work done can be viewed here: https://tinyurl.com/animetextanalytics
 
 
 ## Team
