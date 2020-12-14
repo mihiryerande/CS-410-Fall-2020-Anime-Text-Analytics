@@ -2,9 +2,10 @@ import app
 import json_lines
 
 def initialize():
-    print("Dropping existing db")
+    ''' Drops db tables, creates new tables, parses json, creates db records and inverted index '''
+    print("Dropping existing tables")
     app.db.drop_all()
-    print("Creating new db")
+    print("Creating new tables")
     app.db.create_all()
     genres = set()
     with open('source_code\scraper\scraped.jl', 'rb') as f:

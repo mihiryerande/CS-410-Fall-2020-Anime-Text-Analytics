@@ -4,8 +4,6 @@ from flask_msearch import Search
 
 
 ### DB Connection
-
-## local testing settings
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
 app.config['MSEARCH_BACKEND'] = 'whoosh'
@@ -14,19 +12,21 @@ search = Search()
 search.init_app(app)
 
 # Association tables
-
 class AnimeLDAGenreLink(db.Model):
+    ''' Links Animes to LDA Genres '''
     __tablename__ = 'anime_lda_genre_link'
     lda_genre_id = db.Column(db.Integer(), db.ForeignKey('lda_genres.id'), primary_key=True)
     anime_id = db.Column(db.Integer, db.ForeignKey('animes.id'), primary_key=True)
     weight = db.Column(db.Integer(), nullable=False)
 
+# Links Animes to Genres
 anime_genres = db.Table('anime_genres',
     db.Column('anime_id', db.Integer, db.ForeignKey('animes.id')),
     db.Column('genre_id', db.Integer, db.ForeignKey('genres.id')),
 )
 
 class SimilarAnimeLink(db.Model):
+    ''' Links similar anime with self-referential many-to-many relationship'''
     __tablename__ = 'similar_anime_link'
     anime_1_id = db.Column(db.Integer(), db.ForeignKey('animes.id'), primary_key=True)
     anime_2_id = db.Column(db.Integer, db.ForeignKey('animes.id'), primary_key=True)
@@ -34,6 +34,7 @@ class SimilarAnimeLink(db.Model):
 
 ### Models
 class LDAGenreWord(db.Model):
+    '''Keywords for LDA Genres'''
     __tablename__ = 'lda_genre_words'
     __searchable__ = ['word']
     id = db.Column(db.Integer, primary_key=True)
@@ -47,6 +48,7 @@ class LDAGenreWord(db.Model):
 
 
 class LDAGenre(db.Model):
+    ''' LDA Genre model '''
     __tablename__ = 'lda_genres'
     __searchable__ = ['name']
     id = db.Column(db.Integer, primary_key=True)
@@ -62,6 +64,7 @@ class LDAGenre(db.Model):
 
 
 class Anime(db.Model):
+    ''' Anime model with title and description '''
     __tablename__ = 'animes'
     __searchable__ = ['title', 'description']
     id = db.Column(db.Integer, primary_key=True)
@@ -88,6 +91,7 @@ class Anime(db.Model):
         return '<Anime %r, %s>' % (self.id, self.title)
 
 class Genre(db.Model):
+    ''' Genre model with name '''
     __tablename__ = 'genres'
     __searchable__ = ['name']
     id = db.Column(db.Integer, primary_key=True)
@@ -97,14 +101,10 @@ class Genre(db.Model):
     def __repr__(self):
         return '<Genre %r, %s>' % (self.id, self.name)
 
-
-
-
-
-
 ### Routes
 @app.route('/', methods=['GET'])
 def index():
+    ''' Home page, displays information on site '''
     lda_genres = LDAGenre.query.order_by(LDAGenre.id).all()
     carousel_animes = []
     for lda_genre in lda_genres:
@@ -118,6 +118,7 @@ def index():
 
 @app.route('/search')
 def search():
+    ''' Search page, uses msearch preprocessed inverted index to do full text search of relevant models '''
     query = request.args.get('q')
     if query == None:
         query = " "
@@ -133,6 +134,7 @@ def search():
 @app.route('/anime')
 @app.route('/anime/page/<int:page_num>')
 def anime_list(page_num=1):
+    ''' List page for all anime '''
     animes = Anime.query.order_by(Anime.title).paginate(page=page_num, per_page=20)
     lda_genres = []
     for anime in animes.items:
@@ -142,6 +144,7 @@ def anime_list(page_num=1):
 
 @app.route('/anime/<int:id>')
 def anime(id):
+    ''' Page for individual animes with info on related genres and LDA genres '''
     anime = Anime.query.get_or_404(id)
     anime_weights = AnimeLDAGenreLink.query.filter(AnimeLDAGenreLink.anime_id == id).order_by(db.desc(AnimeLDAGenreLink.weight))[0:10]
     lda_genres = []
@@ -156,17 +159,20 @@ def anime(id):
 @app.route('/genre')
 @app.route('/genre/page/<int:page_num>')
 def genre_list(page_num=1):
+    ''' List page for all genres '''
     genres = Genre.query.order_by(Genre.name).paginate(page=page_num, per_page=20)
     return render_template('genre_list.html', genres=genres)
 
 @app.route('/genre/<int:id>')
 def genre(id):
+    ''' Page for individual genres with info on related animes '''
     genre = Genre.query.get_or_404(id)
     return render_template('genre.html', genre=genre)
 
 @app.route('/lda_genre')
 @app.route('/lda_genre/page/<int:page_num>')
 def lda_genre_list(page_num=1):
+    ''' List page for all LDA Genres '''
     lda_genres = LDAGenre.query.order_by(LDAGenre.id).paginate(page=page_num, per_page=20)
     animes = []
     for lda_genre in lda_genres.items:
@@ -182,6 +188,7 @@ def lda_genre_list(page_num=1):
 
 @app.route('/lda_genre/<int:id>')
 def lda_genre(id):
+    ''' Page for individual LDA Genres with info on related animes and keywords '''
     lda_genre = LDAGenre.query.get_or_404(id)
     anime_weights = AnimeLDAGenreLink.query.filter(AnimeLDAGenreLink.lda_genre_id == id).order_by(db.desc(AnimeLDAGenreLink.weight))[0:10]
     animes = []
@@ -190,11 +197,6 @@ def lda_genre(id):
     words = LDAGenreWord.query.filter(LDAGenreWord.lda_genre_id == id).order_by(db.desc(LDAGenreWord.weight))[0:10]
     return render_template('lda_genre.html', lda_genre=lda_genre, anime_weights=anime_weights, animes=animes, words=words)
 
-
-
-
 ### Runtime
 if __name__ == "__main__":
-    # from init import initialize
-    # initialize()
     app.run(debug=True)
