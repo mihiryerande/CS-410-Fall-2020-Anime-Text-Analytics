@@ -35,7 +35,7 @@
 
 ## Website
   
-  The output of the project has been published to a website, which can be found here: <<<INSERT URL HERE,>>>
+  The output of the project has been published to a website, which can be found here: https://animetextanalytics.azurewebsites.net/
 
 # LDA Implementation
   
