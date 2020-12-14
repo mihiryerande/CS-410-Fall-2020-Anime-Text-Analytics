@@ -2,7 +2,7 @@
   
   This is a Course Project for UIUC CS 410: Text Information Systems (Fall 2020).
   
-  To view the output of this project, please visit https://animetextanalytics.azurewebsites.net/documentation.
+  To view the output of this project, please visit https://animetextanalytics.azurewebsites.net.
 
 
 ## Team
@@ -31,7 +31,7 @@
 
 ## Website
   
-  The output of the project has been published to a website, which can be found here: https://animetextanalytics.azurewebsites.net/
+  The output of the project has been published to a website, which can be found here: https://animetextanalytics.azurewebsites.net
 
 # LDA Implementation
   
@@ -102,8 +102,8 @@ After attempting to utilize [Azure CosmosDB](https://azure.microsoft.com/en-us/f
 Our attempts at using CosmosDB and Azure SQL were hindered by slow upload times, as we had to parse from json and upload around 50,000 records, which would have taken several hours. The Azure Stack would have provided us some ecosystem advantages such as use of their BM25 ranking solution, [Azure Cognitive Search](https://azure.microsoft.com/en-us/services/search/?OCID=AID2100131_SEM_d7b98289b8b81cfe7fe8dd5f75c5bec1:G:s&ef_id=d7b98289b8b81cfe7fe8dd5f75c5bec1:G:s&msclkid=d7b98289b8b81cfe7fe8dd5f75c5bec1 "Azure Cognitive Search"), but nevertheless, we were able to find a different avenue for full text search.
 The database can be initialized simply by running `python init.py` from the root of the repo.  This file will delete the former tables, create the new tables, parse the JSON and populate the Database alongside the relationships between the various tables.
 
-## Text Retreival Model
-After researching different libraries for text retrieval models, we settled on utilizing the [MSearch](https://github.com/honmaple/flask-msearch "MSearch") library, as it has the most integrated support with our web framework Flask.  MSearch serves as a wrapper around [Whoosh](https://whoosh.readthedocs.io/en/latest/intro.html "Whoosh"), a pure Python search engine library that capitalizes on [Okapi BM25](https://en.wikipedia.org/wiki/Okapi_BM25 "Okapi BM25") ranking function. Within [app.py](https://github.com/mihiryerande/CS-410-Fall-2020-Anime-Text-Analytics/blob/main/app.py "`app.py`"), we have marked fields in the various tables with `__searchable__` and created a custom route and view to collect and see the results of a query. The search thus exceeds the utility of normal database queries, facilitating results across different tables with ranking.  The inverted index is created during the data population phase in [init.py](https://github.com/mihiryerande/CS-410-Fall-2020-Anime-Text-Analytics/blob/main/init.py "init.py").
+## Text Retrieval Model
+After researching different libraries for text retrieval models, we settled on utilizing the [MSearch](https://github.com/honmaple/flask-msearch "MSearch") library, as it has the most integrated support with our web framework Flask. MSearch serves as a wrapper around [Whoosh](https://whoosh.readthedocs.io/en/latest/intro.html "Whoosh"), a pure Python search engine library that capitalizes on [Okapi BM25](https://en.wikipedia.org/wiki/Okapi_BM25 "Okapi BM25") ranking function. Within [app.py](https://github.com/mihiryerande/CS-410-Fall-2020-Anime-Text-Analytics/blob/main/app.py "`app.py`"), we have marked fields in the various tables with `__searchable__` and created a custom route and view to collect and see the results of a query. The search thus exceeds the utility of normal database queries, facilitating results across different tables with ranking.  The inverted index is created during the data population phase in [init.py](https://github.com/mihiryerande/CS-410-Fall-2020-Anime-Text-Analytics/blob/main/init.py "init.py").
 
 ## Web Development and Hosting
 The website is made using [Flask](https://flask.palletsprojects.com/en/1.1.x/ "Flask"), a lightweight web framework in Python.  It utilizes a standard MVC architecture and communicates cleanly with the Database via [SQLAlchemy](https://www.sqlalchemy.org/ "SQLAlchemy").  The site is hosted and deployed on Microsoft Azure using [Azure Web Apps](https://azure.microsoft.com/en-us/services/app-service/web/ "Azure Web Apps").  The frontend Javascript and CSS components is all developed utilizing the [Materialize](https://materializecss.com/ "Materialize") framework.
