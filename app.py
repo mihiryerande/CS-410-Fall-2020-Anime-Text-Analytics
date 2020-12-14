@@ -2,19 +2,56 @@ from flask import Flask, render_template, url_for, request, redirect
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
+### DB Connection
+
+## local testing settings
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
 db = SQLAlchemy(app)
 
+## production testing settings
+# import pyodbc
+# import urllib
+
+# app = Flask(__name__)
+
+# for driver in pyodbc.drivers():
+#     print(driver)
+
+# params = urllib.parse.quote_plus \
+# (r'Driver={ODBC Driver 17 for SQL Server};Server=tcp:cs410-server.database.windows.net,1433;Database=CS410;Uid=karanb2;Pwd=Pass1Word;Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;')
+# conn_str = 'mssql+pyodbc:///?odbc_connect={}'.format(params)
+# app.config['SQLALCHEMY_DATABASE_URI'] = conn_str
+
+# print('connection is ok')
+# db = SQLAlchemy(app)
+
+
 ### Models
+
+class SimilarAnimeLink(db.Model):
+    __tablename__ = 'similar_anime_link'
+    anime_1_id = db.Column(db.Integer(), db.ForeignKey('animes.id'), primary_key=True)
+    anime_2_id = db.Column(db.Integer, db.ForeignKey('animes.id'), primary_key=True)
+    distance = db.Column(db.Integer(), nullable=False)
 
 class Anime(db.Model):
     __tablename__ = 'animes'
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(200), nullable=False)
-    description = db.Column(db.String(200), default="")
+    description = db.Column(db.Text(), default="")
     genres = db.relationship('Genre', secondary='anime_genres', backref='anime')
-    # lda_genres = db.relationship('LDAGenre', secondary='anime_lda_genres', backref='anime')
+    similar_animes = db.relationship('SimilarAnimeLink', backref='Anime')
+    similar_animes = db.relationship(
+        'Anime', 
+        secondary="similar_anime_link",
+        primaryjoin=(SimilarAnimeLink.anime_1_id == id),
+        secondaryjoin=(SimilarAnimeLink.anime_2_id == id),
+        backref=db.backref('anime1s', lazy='dynamic'),
+        lazy='dynamic'
+    )
+
+
     lda_genres = db.relationship(
         'LDAGenre',
         secondary='anime_lda_genre_link'
@@ -37,7 +74,6 @@ class LDAGenre(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(200), nullable=False)
     words = db.relationship('LDAGenreWord', backref='LDAGenre')
-    # animes = db.relationship('Anime', secondary='anime_lda_genres', backref='lda_genre')
     animes = db.relationship(
         'Anime',
         secondary='anime_lda_genre_link'
@@ -102,7 +138,11 @@ def anime(id):
     lda_genres = []
     for item in anime_weights:
         lda_genres.append(LDAGenre.query.get(item.lda_genre_id))
-    return render_template('anime.html', anime=anime, anime_weights=anime_weights, lda_genres=lda_genres)
+    similar_anime_links = SimilarAnimeLink.query.filter(SimilarAnimeLink.anime_1_id == id).order_by(db.asc(SimilarAnimeLink.distance)) 
+    similar_animes = []
+    for item in similar_anime_links:
+        similar_animes.append(Anime.query.get(item.anime_2_id))
+    return render_template('anime.html', anime=anime, anime_weights=anime_weights, lda_genres=lda_genres, similar_anime_links=similar_anime_links, similar_animes=similar_animes)
 
 @app.route('/genre')
 @app.route('/genre/page/<int:page_num>')

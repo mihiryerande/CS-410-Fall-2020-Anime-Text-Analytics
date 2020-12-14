@@ -47,11 +47,25 @@
             </tbody>
           </table>
         <h5>Similar Shows:</h5>
-        <div class="collection">
-            {% for genre in anime.genres %}
-            <a href="#!" class="collection-item">TODO</a>
+        <table class="highlight blue-grey lighten-4 blue-grey-text text-darken-5">
+          <thead>
+            <tr>
+                <th>Title</th>
+                <th>LDA Distance</th>
+            </tr>
+          </thead>
+  
+          <tbody>
+            {% for anime in similar_animes %}
+            <tr>
+              <td><a href="{{ url_for('lda_genre', id=lda_genres[loop.index - 1].id) }}">
+                  {{ anime.title }}</a></td>
+              <td>{{ similar_anime_links[loop.index - 1].distance }}</td>
+            </tr>
             {% endfor %}
-        </div>
+
+          </tbody>
+        </table>
     </div>
     
 {% endblock %}
