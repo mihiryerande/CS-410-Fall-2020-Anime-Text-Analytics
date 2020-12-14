@@ -12,16 +12,16 @@
 ## Team
   
   *Produced by Team Nani (何 !?)*:
-  * Karan Bokil [@bokilenator](https://github.com/bokilenator)
-  * Mihir Yerande [@mihiryerande](https://github.com/mihiryerande)
+  * Karan Bokil (karanb2) [@bokilenator](https://github.com/bokilenator)
+  * Mihir Yerande (yerande2) [@mihiryerande](https://github.com/mihiryerande)
 
 ## Explanation
   
-  Anime shows are already categorized into various genres, such as *Shо̄nen* or *Mecha*, for example.
+  Anime shows are categorized into various genres, such as *Shо̄nen* or *Mecha*, for example.
   
   This project attempts to use the **Latent Dirichlet Allocation** (LDA) algorithm to determine such genres from text data.
   
-  Given some input text data, LDA works by training a model on text data to obtain *topics* and *topic coverages*.
+  LDA works by training a model on input text data to obtain *topics* and *topic coverages*.
   
   We use text data, scraped and cleaned, from *myanimelist.com*, where there are short synopses of anime shows.
   
@@ -37,9 +37,11 @@
   
   The output of the project has been published to a website, which can be found here: <<<INSERT URL HERE,>>>
 
-# Implementation
+# LDA Implementation
   
   This section steps through the implementation of the project from start to finish.
+  
+  The LDA code and output is all stored in the [*source_code*](https://github.com/mihiryerande/CS-410-Fall-2020-Anime-Text-Analytics/tree/main/source_code) directory.
 
 ## Scraper
   
@@ -94,7 +96,7 @@
   
   We use the Hellinger distance utilities provided in *gensim*, as described [here](https://radimrehurek.com/gensim_3.8.3/auto_examples/tutorials/run_distance_metrics.html#hellinger).
   
-  As this step produces very large files, the **output has not been stored** here.
+  The output of this step has already been written to [*lda_distance*](https://github.com/mihiryerande/CS-410-Fall-2020-Anime-Text-Analytics/blob/main/source_code/lda_distance/).
   
   See [*write_lda_distance.ipynb*](https://github.com/mihiryerande/CS-410-Fall-2020-Anime-Text-Analytics/blob/main/source_code/write_lda_distance.ipynb) for further explanation.
 

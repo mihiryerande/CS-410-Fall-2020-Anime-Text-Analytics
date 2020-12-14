@@ -175,6 +175,16 @@ def clean_text(text, unwanted):
 ################################################################################
 
 def main(input_filename, output_filename):
+    """
+    Main function to clean raw scraped text and produce the input text for LDA.
+
+    Args:
+        input_filename (str): A *.jl file containing the scraper output.
+        output_filename (str): A *.jl file where the cleaned text will be written.
+
+    Returns:
+        None
+    """
     print('Cleaning scraped data...')
     with open(input_filename, 'r') as in_f, open(output_filename, 'w') as out_f:
         # Words to exclude for LDA
