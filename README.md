@@ -12,8 +12,8 @@
 ## Team
   
   *Produced by Team Nani (何 !?)*:
-  * Karan Bokil [@bokilenator](https://github.com/bokilenator)
-  * Mihir Yerande [@mihiryerande](https://github.com/mihiryerande)
+  * Karan Bokil (karanb2) [@bokilenator](https://github.com/bokilenator)
+  * Mihir Yerande (yerande2) [@mihiryerande](https://github.com/mihiryerande)
 
 ## Explanation
   
