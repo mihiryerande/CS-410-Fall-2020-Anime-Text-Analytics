@@ -1,13 +1,9 @@
-# FIXME
-
-  *Add website URL in couple places below.
-  *
-
 # Anime Text Analytics
   
   This is a Course Project for UIUC CS 410: Text Information Systems (Fall 2020).
   
-  To view the output of this project, please visit <<.<INSERT URL HERE, AND BELOW>.>>
+  To view the output of this project, please visit https://animetextanalytics.azurewebsites.net/documentation.
+
 
 ## Team
   
