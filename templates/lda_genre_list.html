@@ -12,9 +12,10 @@
         <table class="highlight">
             <thead>
               <tr>
-                  <th>Name</th>
-                  <th>Top Shows</th>
-                  <th>Top Words</th>
+                <th>Name</th>
+                <th>Top Shows</th>
+                <th>Top Words</th>
+                <th>Index (used for visualization below)</th>
               </tr>
             </thead>
     
@@ -33,6 +34,7 @@
                         {{ word.word }}{% if word != words[ns.i][-1] %}, {% endif %}
                   {% endfor %}
                 </td>
+                <td>{{ns.i + 1}}</td>
               </tr>
               {% set ns.i = ns.i + 1 %}
               {% endfor %}

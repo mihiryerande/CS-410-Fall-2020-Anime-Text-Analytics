@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
     {% block head %}{% endblock %}
 </head>
-<body>
+<body class="blue-grey darken-3">
     <nav class="blue-grey darken-4">
         <div class="nav-wrapper container">
           <a href="{{ url_for('index') }}" class="brand-logo center">Anime Text Analytics</a>
@@ -19,9 +19,9 @@
             <li><a href="{{ url_for('genre_list') }}">Genres</a></li>
             <li><a href="{{ url_for('lda_genre_list') }}">LDA Genres</a></li>
           </ul>
-          <form class="right">
+          <form class="right" method="GET" action="{{ url_for('search') }}">
             <div class="input-field">
-              <input class="blue-grey darken-4 white-text" id="search" type="search" placeholder="Search site">
+              <input class="blue-grey darken-4 white-text" id="search" type="search" name="q" placeholder="Search site">
               <label class="label-icon white-text" for="search"><i class="material-icons">search</i></label>
             </div>
           </form>
@@ -30,7 +30,7 @@
       <!-- <div class="container"> -->
           {% block body %}{% endblock %}
       <!-- </div> -->
-
+      <br><br>
       <footer class="page-footer blue-grey darken-3">
         <div class="container">
           <div class="row">
@@ -58,7 +58,7 @@
         </div>
         <div class="footer-copyright">
           <div class="container">
-          Website made with Flask, Materialize, Azure SQL, & Azure Cognitive Search.
+          Website made with Flask, Materialize, SQLAlchemy, & MSearch.
           </div>
         </div>
       </footer>

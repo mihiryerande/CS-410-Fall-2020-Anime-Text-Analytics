@@ -53,7 +53,7 @@
     <div class="section no-pad-bot">
       <div class="container">
         <div class="row center">
-          <h5 class="header col s12 light">Search our scraped list of animes, genres and LDA derived subgenres using Azure Cognitive Search.</h5>
+          <h5 class="header col s12 light">Search our scraped list of animes, genres and LDA derived subgenres using BM25 via MSearch.</h5>
         </div>
       </div>
     </div>
@@ -64,19 +64,16 @@
     <div class="section">
 
       <div class="row">
-        <div class="col s12 center">
-          <h3><i class="mdi-content-send brown-text"></i></h3>
+        <div class="col s12 center white-text">
           <h4>Search</h4>
           <div class="row">
-            <form class="col s12">
-              <div class="row">
+              <form class="col s12" method="GET" action="{{ url_for('search') }}">
                 <div class="input-field col s12">
                   <i class="material-icons prefix">search</i>
-                  <textarea id="search-demo" class="materialize-textarea"></textarea>
+                  <input class="white-text" id="search-demo" type="text" name="q">
                   <label for="search-demo">Search key words for an anime or genre.</label>
                 </div>
-              </div>
-            </form>
+              </form>
           </div>
         </div>
       </div>
@@ -89,6 +86,7 @@
     <div class="section no-pad-bot">
       <div class="container">
         <div class="row center">
+          <h5 class="header col s12 light">Feel free to explore and enjoy the website!</h5>
         </div>
       </div>
     </div>

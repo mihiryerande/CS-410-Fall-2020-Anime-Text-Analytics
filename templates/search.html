@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Search</title>
+{% endblock %}
+
+{% block body %}
+<div class="blue-grey darken-2">
+    <br>
+    <div class="container white-text">
+        <h1>Search Results</h1>
+        <table class="highlight">
+            <thead>
+              <tr>
+                  <th>Result</th>
+                  <th>Type</th>
+              </tr>
+            </thead>
+    
+            <tbody>
+              {% for lda_genre in lda_genres %}
+              <tr>
+                <td><a class="force-white" href="{{ url_for('lda_genre', id=lda_genre.id) }}">{{ lda_genre.name }}</a></td>
+                <td>LDA Genre</td>
+              </tr>
+              {% endfor %}
+              {% for genre in genres %}
+              <tr>
+                <td><a class="force-white" href="{{ url_for('genre', id=genre.id) }}">{{ genre.name }}</a></td>
+                <td>Genre</td>
+              </tr>
+              {% endfor %}
+              {% for anime in animes %}
+              <tr>
+                <td><a class="force-white" href="{{ url_for('anime', id=anime.id) }}">{{ anime.title }}</a></td>
+                <td>Anime</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+
+    </div>
+    
+{% endblock %}

@@ -103,12 +103,8 @@ class Genre(db.Model):
 
 
 ### Routes
-
-@app.route('/', methods=['POST', 'GET'])
+@app.route('/', methods=['GET'])
 def index():
-
-    results = Genre.query.msearch('school',fields=['name'],limit=20)
-    print("results",results, results.all())
     lda_genres = LDAGenre.query.order_by(LDAGenre.id).all()
     carousel_animes = []
     for lda_genre in lda_genres:
@@ -119,6 +115,20 @@ def index():
         carousel_animes.append(lda_genre_animes)
     animes = Anime.query.order_by(Anime.title).all()
     return render_template('index.html', lda_genres=lda_genres, carousel_animes=carousel_animes, animes=animes)
+
+@app.route('/search')
+def search():
+    query = request.args.get('q')
+    if query == None:
+        query = " "
+    lda_genres = LDAGenre.query.msearch(query,limit=20).all()
+    words = LDAGenreWord.query.msearch(query,limit=20).all()
+    genres = Genre.query.msearch(query,limit=20).all()
+    animes = Anime.query.msearch(query,limit=20).all()
+    for word in words:
+        if word.lda_genre_id not in list(map(lambda x: x.id, lda_genres)):
+            lda_genres.append(LDAGenre.query.get(word.lda_genre_id))
+    return render_template('search.html', lda_genres=lda_genres, genres=genres, animes=animes)
 
 @app.route('/anime')
 @app.route('/anime/page/<int:page_num>')
